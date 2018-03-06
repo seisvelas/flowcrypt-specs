@@ -13,36 +13,51 @@ key_backups = [crypto_key_read(backup) for backup in armored_key_backups]
 # group into array of arrays by longid, eg [[key1a, key1b], [key2]]
 key_backup_groups = group_keys_by_longid(key_backups)
 
-# successfully imported key ids
-successful_longids = []
+# unique list of all encountered backup longids
+key_backup_longids_all = [key_backup.longid for key_backup in key_backups].unique()
 
-# display to user eg "We found {key_count} backups"
-key_count = key_backup_groups.length
+# look through longids that were already imported before. Mark such longids as successfully imported
+key_backup_longids_success = key_backup_longids_all.filter(is_longid_already_present_in_database)
 
-function process_new_passphrase(passphrase):  # user just entered a new pass phrase to test
+if key_backup_longids_all.length == 0:
+    # no backups - offer to create a key and ask for a new pass phrase
+    render_set_up_a_new_account()
+else if key_backup_longids_success.length > 0: 
+    # at least one key that was backed up is already in the database
+    evaluate_recovery_stage_and_render(True)
+else:
+    # no found backup is in the database yet
+    render_found_backups_please_enter_passphrase()
 
-    # test pass pass phrase and import matched keys
-    new_key_match = False
-    for key_backup_group in key_backup_groups:
-        for key in key_backup_group:
-            if key.longid in successful_longids:
-                break  # skip to next group, we already imported a key with the same longid
-            if passphrase_can_unlock_key(passphrase, key.copy()):  # always test on a copy! Do not save unlocked key into database of keys
-                save_new_key_into_database(key)
-                successful_longids.append(key.longid)
-                new_key_match = True
-                break  #skip to next group
 
-    # evaluate test result
-    if new_key_match == False:
+def evaluate_recovery_stage_and_render(new_key_imported):
+    if new_key_imported == False:
         # try again
         render_passphrase_did_not_match()
     else:
-        if successful_longids.length == key_count:
+        if key_backup_longids_success.length == key_backup_longids_all.length:
             # all keys imported (one from each group)
-            render_setup_done()
+            render_setup_done()  # on most platforms, this means show email inbox
         else:  
             # successfully imported key from at least one group
             # user should try more pass phrases
             render_some_keys_imported_some_still_missing() 
+
+
+def process_new_passphrase(passphrase):  
+    # user just entered a new pass phrase to test
+    # test pass pass phrase and import matched keys
+    new_key_imported = False
+    for key_backup_group in key_backup_groups:
+        for key in key_backup_group:
+            if key.longid in key_backup_longids_success:
+                break  # skip to next group, we already imported a key with the same longid
+            if passphrase_can_unlock_key(passphrase, key.copy()):
+                # always test on a copy! Do not save unlocked key into database of keys
+                save_new_key_into_database(key)
+                key_backup_longids_success.append(key.longid)
+                new_key_imported = True
+                break  #skip to next group
+    evaluate_recovery_stage_and_render(new_key_imported)
+
 ```
