@@ -61,3 +61,7 @@ def process_new_passphrase(passphrase):
     evaluate_recovery_stage_and_render(new_key_imported)
 
 ```
+
+Fundamentally, the same logic is used in the following situations:
+ - cannot decrypt message (missing key) -> import missing backup
+ - settings -> backups -> import
