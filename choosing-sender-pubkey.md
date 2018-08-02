@@ -2,24 +2,23 @@
 
 This pseudo code is used to decide which public key to use for our own key when sending out a message. 
 
+the following code assumes all keys of all accounts are stored in one table, eg `private_keys` that also has a column `armoredPublicKey` of somthing similar.
+additionally it assumes a pre-filled database table `key_emails` with the following structure:
+```
++-------------+-------------+
+| longid      | userIdEmail |
++-------------+-------------+
+| DAF456AA..  | em@dom.com  |
+| ......      | ...         |
++-------------+-------------+
+```
+
+1) (longid, userIdEmail) combination should have a `UNIQUE KEY` in sql, so that there can be multiple rows with same longid,  multiple rows with same userIdEmail but not multiple rows where both (longid, userIdEmail) are the same.
+2) update the table when new key is imported
+3) remove from the table by longid if a private key is removed
+
+
 ## Choosing my own pubkey when sending encrypted message
-```
-#
-# the following code assumes all keys of all accounts are stored in one table, eg `private_keys` that also has a column `armoredPublicKey` of somthing similar.
-# additionally it assumes a pre-filled database table `key_emails` with the following structure:
-# 
-# +-------------+-------------+
-# | longid      | userIdEmail |
-# +-------------+-------------+
-# | DAF456AA..  | em@dom.com  |
-# | ......      | ...         |
-# +-------------+-------------+
-#
-# (longid, userIdEmail) combination should have a `UNIQUE KEY` in sql, so that there can be multiple rows with same longid, multiple rows with same userIdEmail but not multiple rows where both (longid, userIdEmail) are the same.
-# update the table when new key is imported
-# remove from the table by longid if a private key is removed
-#
-```
 
 ```python
 # find pubkey based on specific sender email
