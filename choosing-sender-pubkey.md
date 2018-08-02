@@ -15,6 +15,21 @@ This pseudo code is used to decide which public key to use for our own key when 
 # | ......      | ...         |
 # +-------------+-------------+
 #
+# (longid, userIdEmail) combination should have a `UNIQUE KEY` in sql, so that there can be multiple rows with same longid, multiple rows with same userIdEmail but not multiple rows where both (longid, userIdEmail) are the same.
+# update the table when new key is imported
+# remove from the table by longid if a private key is removed
+#
+
+### Searching when sending a message 
+
+If I'm sending from main account address:
+1) search in the table by main account address. If found longid, use that key (public version).
+2) if not found, show error `No key available for your email address main@email.com.\n\nPlease write human@flowcrypt.com for help.` 
+
+If I'm sending from alias address:
+1) search by the alias email. If a key found, use that key.
+2) If no key found, search by account email address. If a key was found, use that key.
+3) If no key found in step 1) and 2) then show an error: `No key available for your email addresses alias@email.com and main@email.com.\n\nPlease write human@flowcrypt.com for help.` 
 
 
 # find pubkey based on specific sender email
