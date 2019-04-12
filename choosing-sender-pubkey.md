@@ -2,8 +2,8 @@
 
 This pseudo code is used to decide which public key to use for our own key when sending out a message. 
 
-the following code assumes all keys of all accounts are stored in one table, eg `private_keys` that also has a column `armoredPublicKey` of somthing similar.
-additionally it assumes a pre-filled database table `key_emails` with the following structure:
+the following code assumes all keys of all accounts are stored in one table, eg `privateKeys` that also has a column `armoredPublicKey` or somthing similar.
+additionally it assumes a pre-filled database table `keyEmails` with the following structure:
 ```
 +-------------+-------------+
 | longid      | userIdEmail |
