@@ -1,6 +1,6 @@
-# Choosing sender pubkey
+# Choosing sender pubkey from local DB
 
-This pseudo code is used to decide which public key to use for our own key when sending out a message. 
+This pseudo code is used to decide which public key to use for our own key when sending out a message.
 
 the following code assumes all keys of all accounts are stored in one table, eg `privateKeys` that also has a column `armoredPublicKey` or somthing similar.
 additionally it assumes a pre-filled database table `keyEmails` with the following structure:
