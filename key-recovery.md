@@ -5,10 +5,8 @@ Following applies when user has just granted permission to the local app to acce
 
 ```python
 # get flat array of all backups, eg [key1a, key2, key1b]
+# notice that each backup file can have several armored keys inside of it
 armored_key_backups = load_all_armored_keys_from_inbox() 
-
-# read all keys
-key_backups = [crypto_key_read(backup) for backup in armored_key_backups]
 
 # group into array of arrays by longid, eg [[key1a, key1b], [key2]]
 key_backup_groups = group_keys_by_longid(key_backups)
