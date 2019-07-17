@@ -18,8 +18,8 @@ key_backup_longids_all = [key_backup.longid for key_backup in key_backups].uniqu
 key_backup_longids_success = key_backup_longids_all.filter(is_longid_already_present_in_database)
 
 if key_backup_longids_all.length == 0:
-    # no backups - offer to create a key and ask for a new pass phrase
-    render_set_up_a_new_account()
+    # no backups
+    render_choice_new_key_or_import_key_manually()
 else if key_backup_longids_success.length > 0: 
     # at least one key that was backed up is already in the database
     evaluate_recovery_stage_and_render(True)
