@@ -15,7 +15,7 @@ key_backup_groups = group_keys_by_longid(key_backups)
 key_backup_longids_all = [key_backup.longid for key_backup in key_backups].unique()
 
 # look through longids that were already imported before. Mark such longids as successfully imported
-key_backup_longids_success = key_backup_longids_all.filter(is_longid_already_present_in_database)
+key_backup_longids_success = key_backup_longids_all.filter(was_key_already_imported_in_the_past)
 
 if key_backup_longids_all.length == 0:
     # no backups
@@ -28,18 +28,17 @@ else:
     render_found_backups_please_enter_passphrase()
 
 
-def evaluate_recovery_stage_and_render(new_key_imported):
-    if new_key_imported == False:
+def evaluate_recovery_stage_and_render(at_least_some_backed_up_key_now_present_in_database):
+    if not at_least_some_backed_up_key_now_present_in_database:
         # try again
         render_passphrase_did_not_match()
-    else:
-        if key_backup_longids_success.length == key_backup_longids_all.length:
-            # all keys imported (one from each group)
-            render_setup_done()  # on most platforms, this means show email inbox
-        else:  
-            # successfully imported key from at least one group
-            # user should try more pass phrases
-            render_some_keys_imported_some_still_missing() 
+    elif key_backup_longids_success.length == key_backup_longids_all.length:
+        # all keys imported (one from each group)
+        render_setup_done()  # on most platforms, this means show email inbox
+    else:  
+        # successfully imported key from at least one group
+        # user should try more pass phrases
+        render_some_keys_imported_some_still_missing() 
 
 
 def process_new_passphrase(passphrase):  
