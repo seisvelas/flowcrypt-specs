@@ -2,7 +2,7 @@
 
 This pseudo code is used to decide which public key to use for our own key when sending out a message.
 
-Becuase user may have several private keys loaded, and because there may be various users / emails listed in them, we need a procedure to choose the right one to use, based on which email user is sending from.
+Because user may have several private keys loaded, and because there may be various users / emails listed in them, we need a procedure to choose the right one to use, based on which email user is sending from.
 
 the following code assumes all keys of all accounts are stored in one table, eg `privateKeys` that also has a column `armoredPublicKey` or somthing similar.
 additionally it assumes a pre-filled database table `keyEmails` with the following structure:
